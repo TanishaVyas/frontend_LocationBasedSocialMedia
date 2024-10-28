@@ -1,9 +1,14 @@
-// SignupWithGoogle.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function SignupWithGoogle() {
   const [userData, setUserData] = useState(null);
+  const [formData, setFormData] = useState({
+    username: "",
+    bio: "",
+    phone: "",
+    dob: "",
+  });
   const navigate = useNavigate();
 
   // Redirects to Google OAuth
@@ -14,12 +19,9 @@ function SignupWithGoogle() {
   // Fetch user data after successful Google auth
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await fetch(
-        "http://localhost:8080/auth/signup/user-data",
-        {
-          credentials: "include",
-        }
-      );
+      const response = await fetch("http://localhost:8080/auth/signup/user-data", {
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setUserData(data);
@@ -28,15 +30,11 @@ function SignupWithGoogle() {
       }
     };
 
-    fetchUserData();
-  }, []); // Only run once on component mount
-
-  const [formData, setFormData] = useState({
-    username: "",
-    bio: "",
-    phone: "",
-    dob: "",
-  });
+    // Call the fetchUserData function only if userData is null
+    if (!userData) {
+      fetchUserData();
+    }
+  }, [userData]); // Dependencies array includes userData
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,20 +44,24 @@ function SignupWithGoogle() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        "http://localhost:8080/auth/complete-signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch("http://localhost:8080/auth/complete-signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ ...formData, email: userData.email }),
+      });
 
       if (response.ok) {
-        navigate("http://localhost:3000/auth/complete-signup");
+        const result = await response.json();
+        
+        // Check user type and redirect accordingly
+        if (result.type === 'admin') {
+          navigate("http://localhost:3000/admin"); // Redirect to admin page
+        } else {
+          navigate("http://localhost:3000/dashboard"); // Redirect to user dashboard
+        }
       } else {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to complete signup");

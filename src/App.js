@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import SignupWithGoogle from "./components/SignupWithGoogle";
 import Dashboard from "./components/Dashboard";
+import Admin from "./components/Admin"
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<SignupWithGoogle />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
