@@ -1,13 +1,15 @@
-//userprofile.js
 import React, { useEffect, useState } from "react";
+import axios from "axios"; // Don't forget to import axios if it's being used
 
 function Dashboard() {
   const [isLoading] = useState(false); // Remove setIsLoading if not using it
+  const [user, setUser] = useState(null);
+  const [userLatitude, setUserLatitude] = useState(null); // State for latitude
+  const [userLongitude, setUserLongitude] = useState(null); // State for longitude
 
   const handleLogout = () => {
     window.location.href = "http://localhost:8080/auth/logout"; // Directly go to logout URL
   };
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,6 +30,9 @@ function Dashboard() {
         (position) => {
           const { latitude, longitude } = position.coords;
           const userEmail = user.email;
+
+          setUserLatitude(latitude); // Set userLatitude state
+          setUserLongitude(longitude); // Set userLongitude state
 
           // Send latitude and longitude to the backend along with email
           fetch("http://localhost:8080/user/update-location", {
@@ -67,6 +72,30 @@ function Dashboard() {
       alert("Geolocation is not supported by this browser.");
     }
   }, [user]); // Run effect only after user is set
+
+  useEffect(() => {
+    if (userLatitude && userLongitude) {
+      // Check for latitude and longitude state
+      fetch("http://localhost:8080/nearby/fetch-locations-in-radius", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          latitude: userLatitude,
+          longitude: userLongitude,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Filtered groups:", data);
+        })
+        .catch((error) => {
+          console.error("Error fetching locations:", error);
+        });
+    }
+  }, [userLatitude, userLongitude]); // Trigger this effect when latitude and longitude are set
+
   if (!user) return <div>Loading...</div>;
   return (
     <div>
