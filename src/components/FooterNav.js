@@ -49,7 +49,7 @@ function FooterNav() {
         label="Profile"
         icon={
             <Avatar 
-            src={user.profilePic || "logo192.png"}
+            src={user?.profilePic || "logo192.png"}
             alt="Profile"
             sx={{ width: 24, height: 24 }}
           />
