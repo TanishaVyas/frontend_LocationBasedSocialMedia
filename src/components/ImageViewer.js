@@ -11,7 +11,8 @@ function ImageViewer({ images }) {
         width: '100%',
         maxWidth: '100%',
         maxHeight: '80vh', // Adjust as needed for scrollable area
-        overflowY: 'hidden',
+        scrollbarWidth: "none", // Firefox
+        "&::-webkit-scrollbar": { display: "none" },
         padding: 2,
       }}
     >

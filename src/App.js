@@ -19,8 +19,7 @@ function App() {
         <Route path="/" element={<SignupWithGoogle />} />
         <Route path="/dashboard" element={<UserProfile />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/location" element={<LocationDisplay />} />{" "}
-        {/* Route for LocationDisplay */}
+        <Route path="/location" element={<LocationDisplay />} />
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/location-finder" element={<LocationFinder />} />
       </Routes>
