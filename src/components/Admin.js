@@ -1,38 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Admin() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const goToLocationFinder = () => {
+    navigate("/location-finder");
+  };
+  const [isLoading] = useState(false); // Remove setIsLoading if not using it
+  const [error] = useState(null); // Remove setError if not using it
 
-  const handleLogout = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch("http://localhost:8080/auth/logout", {
-        method: "POST", // Changed to POST for better security
-        credentials: "include", // Important for sending cookies
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-
-      // Clear any local storage/state if you have any
-      localStorage.clear();
-      // Redirect to home/login page
-      navigate("/");
-    } catch (err) {
-      setError("Failed to logout. Please try again.");
-      console.error("Logout error:", err);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleLogout = () => {
+    window.location.href = "http://localhost:8080/auth/logout"; // Directly go to logout URL
   };
 
   return (
@@ -77,7 +56,12 @@ function Admin() {
           )}
         </button>
       </div>
-
+      <button
+        onClick={goToLocationFinder}
+        className="bg-blue-500 text-white px-4 py-2 rounded-md ml-4"
+      >
+        Go to Location Finder
+      </button>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
           <strong className="font-bold">Error: </strong>
@@ -87,7 +71,9 @@ function Admin() {
 
       {/* Add your admin dashboard content here */}
       <div className="bg-white shadow rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-4">Welcome to Admin Dashboard</h3>
+        <h3 className="text-xl font-semibold mb-4">
+          Welcome to Admin Dashboard
+        </h3>
         {/* Add your admin features/content here */}
       </div>
     </div>
