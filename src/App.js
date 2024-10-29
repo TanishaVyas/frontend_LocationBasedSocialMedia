@@ -5,7 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import SignupWithGoogle from "./components/SignupWithGoogle";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/UserProfile";
 import LocationFinder from "./components/locationfinder";
 import Admin from "./components/Admin";
 import LocationDisplay from "./components/LocationDisplay"; // Import the LocationDisplay component
