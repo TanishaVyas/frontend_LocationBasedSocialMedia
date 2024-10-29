@@ -19,10 +19,12 @@ function Dashboard() {
       const userData = await response.json();
       setUser(userData);
       setUpdatedUser({
-        email: userData.email, // Add email to the updatedUser state
+        email: userData.email,
         username: userData.username,
         bio: userData.bio,
         profilePic: userData.profilePic,
+        phone: userData.phone,
+        dob: userData.dob,
       });
     };
 
@@ -55,7 +57,7 @@ function Dashboard() {
     try {
       const response = await fetch("http://localhost:8080/auth/update-profile", {
         method: "POST",
-        credentials: "include", // Add this to include cookies
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -115,6 +117,26 @@ function Dashboard() {
               onChange={handleChange}
               placeholder="Bio"
               className="w-full p-2 border rounded h-32"
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              name="phone"
+              value={updatedUser.phone || ''}
+              onChange={handleChange}
+              placeholder="Phone Number"
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <input
+              type="date"
+              name="dob"
+              value={updatedUser.dob || ''}
+              onChange={handleChange}
+              placeholder="Date of Birth"
+              className="w-full p-2 border rounded"
             />
           </div>
           <div className="flex space-x-4">
