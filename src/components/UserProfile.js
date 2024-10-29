@@ -85,7 +85,7 @@ function Dashboard() {
           {user.bio}
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          {user.dob}
+        {user.dob ? new Date(user.dob).toLocaleDateString("en-GB") : "N/A"}
         </Typography>
         <Button
           onClick={handleEditToggle}
@@ -120,7 +120,7 @@ function Dashboard() {
         }}
       >
         <Typography variant="h5" color="textPrimary" sx={{ mb: 2 }}>
-          Image Gallery
+          Posts
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <ImageViewer images={images} />

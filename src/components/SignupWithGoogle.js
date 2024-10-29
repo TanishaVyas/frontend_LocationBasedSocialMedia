@@ -1,37 +1,105 @@
 import React from "react";
+import { Box, Typography, Button, Paper } from "@mui/material";
+import GoogleIcon from '@mui/icons-material/Google';
 
-function SignupWithGoogle() {
+const SignupWithGoogle = () => {
   // Redirects to Google OAuth for Sign-In
   const handleGoogleSignup = () => {
     window.location.href = "http://localhost:8080/auth/google?flow=signin";
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Sign in with your Google account to get started
-        </p>
-        <button
-          onClick={handleGoogleSignup}
-          className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+      sx={{
+        background: "linear-gradient(135deg, #004aad, #88c0ff)",
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          width: "100%",
+          maxWidth: 400,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+          borderRadius: 3,
+          backgroundColor: "white",
+        }}
+      >
+        {/* Logo and App Name */}
+        <Box mb={3} display="flex" flexDirection="column" alignItems="center">
+          <img
+            src="Geogram.png"
+            alt="App Logo"
+            style={{ height: 64, marginBottom: 8 }}
+          />
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            sx={{
+              fontFamily: "'Alex Brush', cursive",
+              fontSize: "2rem",
+              color: "#004aad",
+            }}
+          >
+            GeoGram
+          </Typography>
+        </Box>
+
+        {/* Sign-In Text */}
+        <Typography
+          variant="h6"
+          fontWeight="medium"
+          mb={1}
+          sx={{
+            fontFamily: "'Inter', sans-serif",
+            color: "#333333",
+          }}
         >
-          <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-            <svg className="h-5 w-5" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"
-              />
-            </svg>
-          </span>
+          Sign in to your account
+        </Typography>
+        <Typography
+          color="text.secondary"
+          mb={3}
+          sx={{
+            fontFamily: "'Inter', sans-serif",
+            color: "#555555",
+          }}
+        >
+          Use your Google account to get started
+        </Typography>
+
+        {/* Google Sign-In Button */}
+        <Button
+          onClick={handleGoogleSignup}
+          variant="outlined"
+          color="inherit"
+          startIcon={<GoogleIcon />}
+          sx={{
+            borderRadius: 2,
+            fontWeight: "medium",
+            textTransform: "none",
+            fontFamily: "'Inter', sans-serif",
+            borderColor: "#004aad",
+            color: "#004aad",
+            "&:hover": {
+              backgroundColor: "#004aad",
+              color: "white",
+            },
+          }}
+        >
           Sign in with Google
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Paper>
+    </Box>
   );
-}
+};
 
 export default SignupWithGoogle;
