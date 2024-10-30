@@ -26,6 +26,10 @@ function Dashboard() {
     window.location.href = "http://localhost:8080/auth/logout";
   };
 
+  const handleCreatePost = () => {
+    navigate("/create-post"); // Navigate to the CreatePosts page
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await fetchCurrentUser();
@@ -57,7 +61,6 @@ function Dashboard() {
     }
   };
 
-  
   if (!user) return <div>Loading...</div>;
 
   return (
@@ -93,14 +96,14 @@ function Dashboard() {
             <ListItemText
               primary={
                 <Button
-        onClick={(e) => {
-          e.preventDefault(); // Prevent any default action
-          navigate(`/group/${group._id}`); // Navigate to the '/group/:id' page
-        }}
-        sx={{ textAlign: "left", justifyContent: "flex-start" }}
-      >
-        {group.name}
-      </Button>
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent any default action
+                    navigate(`/group/${group._id}`); // Navigate to the '/group/:id' page
+                  }}
+                  sx={{ textAlign: "left", justifyContent: "flex-start" }}
+                >
+                  {group.name}
+                </Button>
               }
               secondary={`Distance: ${
                 group.distance ? group.distance.toFixed(2) : "N/A"
@@ -112,6 +115,13 @@ function Dashboard() {
               color="primary"
             >
               Join Group
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleCreatePost}
+              color="primary"
+            >
+              create post
             </Button>
           </ListItem>
         ))}

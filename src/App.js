@@ -2,7 +2,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useLocation
+  useLocation,
 } from "react-router-dom";
 import SignupWithGoogle from "./components/SignupWithGoogle";
 import Dashboard from "./components/Dashboard";
@@ -11,6 +11,7 @@ import LocationFinder from "./components/locationfinder";
 import Group from "./components/Groupdetail";
 import Admin from "./components/Admin";
 import FooterNav from "./components/FooterNav";
+import Posts from "./components/CreatePosts";
 
 function App() {
   return (
@@ -31,7 +32,8 @@ function AppRoutes() {
         <Route path="/data" element={<Dashboard />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/location-finder" element={<LocationFinder />} />
-        <Route path="/group/:id" element={<Group />} /> 
+        <Route path="/createpost" element={<Posts />} />
+        <Route path="/group/:id" element={<Group />} />
       </Routes>
       {/* Render FooterNav only if the current path is not the root path */}
       {location.pathname !== "/" && <FooterNav />}
