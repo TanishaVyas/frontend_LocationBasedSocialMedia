@@ -1,8 +1,17 @@
+// Dashboard.js
 import React, { useEffect, useState } from "react";
 import ImageViewer from "./ImageViewer";
 import EditProfile from "./EditProfile";
 import Avatar from "@mui/material/Avatar";
-import { Box, Typography, Button, Divider, Modal } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
+import { getUserAndNearbyGroups } from "../services/groupService";
+import { getAllPosts } from "../services/postService";
 
 const images = [
   "https://via.placeholder.com/150",
@@ -12,33 +21,89 @@ const images = [
 ];
 
 function Dashboard() {
-  const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleLogout = () => {
-    window.location.href = "http://localhost:8080/auth/logout";
-  };
+  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [groups, setGroups] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch("http://localhost:8080/auth/current_user", {
-        credentials: "include",
-      });
-      const userData = await response.json();
-      setUser(userData);
+      try {
+        // Log token before making the request
+        const storedToken = localStorage.getItem("token");
+        console.log("Token used for fetchUser:", storedToken);
+
+        const response = await fetch(
+          "http://localhost:8080/auth/current_user",
+          {
+            headers: { Authorization: `Bearer ${storedToken}` },
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch user data");
+
+        const userData = await response.json();
+        console.log("Fetched user data:", userData);
+        setUser(userData);
+
+        console.log("Posts:", getAllPosts());
+        await getUserAndNearbyGroups(setUser, setGroups);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchUser();
   }, []);
 
-  const handleEditToggle = () => setIsEditing(!isEditing);
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("token");
+    window.location.href = "http://localhost:8080/auth/logout";
+  };
+
+  const handleEditToggle = () => setIsEditing((prev) => !prev);
 
   const handleSave = (updatedData) => {
     setUser(updatedData);
     setIsEditing(false);
   };
 
-  if (!user) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="85vh"
+      >
+        <CircularProgress /> {/* Loading spinner */}
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return <div>No user data found.</div>; // Handle case where user is not found
+  }
+
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="85vh"
+      >
+        <CircularProgress /> {/* Loading spinner */}
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return <div>No user data found.</div>; // Handle case where user is not found
+  }
 
   return (
     <Box
@@ -47,9 +112,7 @@ function Dashboard() {
         flexDirection: { xs: "column", md: "row" },
         gap: 4,
         p: 4,
-        height:"85vh"
-
-          
+        height: "85vh",
       }}
     >
       {/* Left Section: User Profile */}
@@ -85,7 +148,7 @@ function Dashboard() {
           {user.bio}
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-        {user.dob ? new Date(user.dob).toLocaleDateString("en-GB") : "N/A"}
+          {user.dob ? new Date(user.dob).toLocaleDateString("en-GB") : "N/A"}
         </Typography>
         <Button
           onClick={handleEditToggle}

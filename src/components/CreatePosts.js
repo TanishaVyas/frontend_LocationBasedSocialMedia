@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCurrentUser } from "../services/UserService.js"; // Adjust path as needed
+import { fetchCurrentUser } from "../services/UserService.js";
+import { createPost } from "../services/postService.js";
 
 function Posts() {
   const navigate = useNavigate();
@@ -58,42 +59,16 @@ function Posts() {
       return;
     }
 
-    // Convert image file to base64
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const imgBase64 = reader.result.split(",")[1]; // Get base64 part
-
-      // Prepare data for submission
-      const postData = {
-        username: username,
-        groupId: "672094a2c276786346a14ad7", // Default to "The Charcoal Pit"
-        img: imgBase64,
-        imgdesc: description,
-      };
-
-      // Send data to backend
-      try {
-        const response = await fetch("http://localhost:8080/auth/create-post", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(postData),
-        });
-
-        const result = await response.json();
-        if (response.ok) {
-          alert("Post created successfully!");
-          navigate("/dashboard");
-        } else {
-          alert(result.error || "Failed to create post. Please try again.");
-        }
-      } catch (error) {
-        console.error("Error submitting post:", error);
-        alert("An error occurred while creating the post.");
-      }
-    };
-    reader.readAsDataURL(image);
+    try {
+      await createPost({ image, username, description, selectedGroup });
+      alert("Post created successfully!");
+      // Optionally clear the form
+      setImage(null);
+      setDescription("");
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert("Failed to create post. Please try again.");
+    }
   };
 
   return (

@@ -1,13 +1,22 @@
 import React from "react";
+import { useEffect } from "react";
 import { Box, Typography, Button, Paper } from "@mui/material";
-import GoogleIcon from '@mui/icons-material/Google';
+import GoogleIcon from "@mui/icons-material/Google";
 
 const SignupWithGoogle = () => {
   // Redirects to Google OAuth for Sign-In
   const handleGoogleSignup = () => {
     window.location.href = "http://localhost:8080/auth/google?flow=signin";
   };
-
+  // After redirect from Google OAuth, handle the token here
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (token) {
+      localStorage.setItem("token", token); // Store the token
+      // Optionally update your auth state here
+    }
+  }, []);
   return (
     <Box
       display="flex"

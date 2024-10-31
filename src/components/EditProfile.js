@@ -1,8 +1,9 @@
-// components/EditProfile.js
 import React, { useState } from "react";
 import { Modal, Box, TextField, Button } from "@mui/material";
 import { updateUserProfile } from "../services/UserService";
 import NotificationPopup from "./NotificationPopup";
+import { changeImageToBase64 } from "../services/imageService";
+
 function EditProfile({ open, onClose, user, onSave }) {
   const [updatedUser, setUpdatedUser] = useState({
     email: user.email,
@@ -19,18 +20,9 @@ function EditProfile({ open, onClose, user, onSave }) {
     setUpdatedUser({ ...updatedUser, [name]: value });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImageFile(file);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setUpdatedUser({ ...updatedUser, profilePic: reader.result });
-    };
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  };
+  // Usage inside a component
+  const onImageChange = (e) =>
+    changeImageToBase64(e, setImageFile, setUpdatedUser, updatedUser);
 
   const handleSave = async () => {
     try {
@@ -64,12 +56,12 @@ function EditProfile({ open, onClose, user, onSave }) {
       <Modal open={open} onClose={onClose} aria-labelledby="edit-profile-modal">
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: 'background.paper',
+            bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
             borderRadius: 2,
@@ -112,8 +104,13 @@ function EditProfile({ open, onClose, user, onSave }) {
             onChange={handleChange}
             InputLabelProps={{ shrink: true }}
           />
-          <input type="file" accept="image/*" onChange={handleImageChange} style={{ marginTop: 16 }} />
-          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={onImageChange}
+            style={{ marginTop: 16 }}
+          />
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
             <Button variant="contained" color="primary" onClick={handleSave}>
               Save
             </Button>
@@ -123,7 +120,7 @@ function EditProfile({ open, onClose, user, onSave }) {
           </Box>
         </Box>
       </Modal>
-      
+
       {/* Notification Popup for Success or Failure */}
       <NotificationPopup
         open={notification.open}

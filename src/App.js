@@ -12,30 +12,106 @@ import Group from "./components/Groupdetail";
 import Admin from "./components/Admin";
 import FooterNav from "./components/FooterNav";
 import Posts from "./components/CreatePosts";
+import PrivateRoute from "./Authguard/PrivateRoute";
+import { useAuth } from "./Authguard/AuthContext";
+import { useEffect } from "react";
+import { AuthProvider } from "./Authguard/AuthContext";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   return (
-    <Router>
-      <AppRoutes />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
   );
 }
 
 function AppRoutes() {
   const location = useLocation();
 
+  function TokenHandler() {
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
+
+    useEffect(() => {
+      const handleToken = async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+        console.log("token:", token);
+
+        if (token) {
+          // Store token in localStorage
+          localStorage.setItem("token", token);
+
+          // Decode and set user
+          try {
+            const decoded = jwtDecode(token);
+            setUser(decoded);
+
+            // Fetch current user data
+            const response = await fetch(
+              "http://localhost:8080/auth/current_user",
+              {
+                headers: { Authorization: `Bearer ${token}` },
+                credentials: "include",
+              }
+            );
+
+            if (!response.ok) throw new Error("Failed to fetch user data");
+
+            const userData = await response.json();
+            console.log("Fetched user data:", userData);
+
+            // Remove token from URL
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+
+            // Navigate based on user type
+            if (userData.type === "user") {
+              navigate("/dashboard", { replace: true });
+            } else if (userData.type === "admin") {
+              navigate("/location-finder", { replace: true });
+            }
+          } catch (error) {
+            console.error("Token decode error:", error);
+            navigate("/");
+          }
+        } else {
+          // Handle case when token is missing
+          const storedToken = localStorage.getItem("token");
+          if (!storedToken) {
+            navigate("/");
+          }
+        }
+      };
+      handleToken();
+    }, [navigate, setUser]);
+
+    // Show loading state while handling token
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <Routes>
         <Route path="/" element={<SignupWithGoogle />} />
-        <Route path="/dashboard" element={<UserProfile />} />
-        <Route path="/data" element={<Dashboard />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/location-finder" element={<LocationFinder />} />
-        <Route path="/createpost" element={<Posts />} />
-        <Route path="/group/:id" element={<Group />} />
+        <Route path="/tokenhandlerUser" element={<TokenHandler />} />
+        <Route
+          path="/dashboard"
+          element={<PrivateRoute element={UserProfile} />}
+        />
+        <Route path="/data" element={<PrivateRoute element={Dashboard} />} />
+        <Route path="/admin" element={<PrivateRoute element={Admin} />} />
+        <Route path="/createpost" element={<PrivateRoute element={Posts} />} />
+        <Route
+          path="/location-finder"
+          element={<PrivateRoute element={LocationFinder} />}
+        />
+        <Route path="/group/:id" element={<PrivateRoute element={Group} />} />
       </Routes>
-      {/* Render FooterNav only if the current path is not the root path */}
+
       {location.pathname !== "/" && <FooterNav />}
     </>
   );

@@ -9,11 +9,8 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import {
-  fetchCurrentUser,
-  fetchNearbyGroups,
-  joinGroup,
-} from "../services/UserService";
+import { fetchCurrentUser } from "../services/UserService";
+import { joinGroup, fetchNearbyGroups } from "../services/groupService";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -27,7 +24,7 @@ function Dashboard() {
   };
 
   const handleCreatePost = () => {
-    navigate("/create-post"); // Navigate to the CreatePosts page
+    navigate("/create-post");
   };
 
   useEffect(() => {
@@ -97,8 +94,8 @@ function Dashboard() {
               primary={
                 <Button
                   onClick={(e) => {
-                    e.preventDefault(); // Prevent any default action
-                    navigate(`/group/${group._id}`); // Navigate to the '/group/:id' page
+                    e.preventDefault();
+                    navigate(`/group/${group._id}`);
                   }}
                   sx={{ textAlign: "left", justifyContent: "flex-start" }}
                 >
