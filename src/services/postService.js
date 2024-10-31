@@ -1,4 +1,4 @@
-export const createPost = async ({ image, username, description, groupId }) => {
+export const createPost = async ({ image, userId, description, groupId }) => {
   try {
     const imgBase64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -13,7 +13,7 @@ export const createPost = async ({ image, username, description, groupId }) => {
     });
 
     const postData = {
-      username: username,
+      userId: userId,
       groupId: groupId,
       img: imgBase64,
       imgdesc: description,

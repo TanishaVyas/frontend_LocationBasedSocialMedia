@@ -10,16 +10,17 @@ function Posts() {
   const [username, setUsername] = useState("");
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     fetchGroups();
     getUserData();
   }, [navigate]);
-
   const getUserData = async () => {
     try {
       const userData = await fetchCurrentUser();
       if (userData && userData.username) {
+        setUserId(userData._id);
         setUsername(userData.username);
       } else {
         alert("Username not found. Please log in.");
@@ -60,7 +61,8 @@ function Posts() {
     }
 
     try {
-      await createPost({ image, username, description, selectedGroup });
+      const GroupId = "672094a2c276786346a14ad7";
+      await createPost({ image, userId, description, groupId: GroupId });
       alert("Post created successfully!");
       // Optionally clear the form
       setImage(null);
