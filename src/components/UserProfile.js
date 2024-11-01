@@ -10,8 +10,6 @@ import {
   Divider,
   CircularProgress,
 } from "@mui/material";
-import { getUserAndNearbyGroups } from "../services/groupService";
-import { getAllPosts } from "../services/postService";
 
 const images = [
   "https://via.placeholder.com/150",
@@ -46,9 +44,6 @@ function Dashboard() {
         const userData = await response.json();
         console.log("Fetched user data:", userData);
         setUser(userData);
-
-        console.log("Posts:", getAllPosts());
-        await getUserAndNearbyGroups(setUser, setGroups);
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {

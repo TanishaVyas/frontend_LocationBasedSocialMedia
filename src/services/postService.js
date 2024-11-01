@@ -1,3 +1,4 @@
+import { fetchCurrentUser } from "./UserService";
 export const createPost = async ({ image, userId, description, groupId }) => {
   try {
     const imgBase64 = await new Promise((resolve, reject) => {
@@ -104,6 +105,50 @@ export const getAllPostsByUserId = async (UserId) => {
     return post || [];
   } catch (error) {
     console.error("Error fetching posts", error);
+    return [];
+  }
+};
+
+export const getAllPostByDistance = async (setUser) => {
+  try {
+    // Fetch the current user data
+    const userData = await fetchCurrentUser();
+    if (userData) {
+      setUser(userData);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log("Position:", latitude, longitude);
+
+            // Fetch posts by distance
+            const response = await fetch(
+              "http://localhost:8080/post/getAllPostByDistance",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ latitude, longitude }), // Corrected body format
+              }
+            );
+
+            if (!response.ok) throw new Error("Failed to get posts");
+
+            const result = await response.json();
+            const posts = result.data;
+            console.log("All Posts by distance:", posts);
+
+            return posts || [];
+          },
+          (error) => {
+            console.error("Geolocation error:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching posts:", error);
     return [];
   }
 };
