@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchCurrentUser } from "../services/UserService.js";
-import { createPost } from "../services/postService.js";
+import {
+  createPost,
+  getAllPostsByGroupId,
+  getAllPostsByUserId,
+  likeOnPost, // New import for liking a post
+  addComment, // New import for commenting on a post
+} from "../services/postService.js";
 
 function Posts() {
   const navigate = useNavigate();
@@ -11,11 +17,13 @@ function Posts() {
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
   const [userId, setUserId] = useState("");
+  const [comment, setComment] = useState(""); // New state for comment
 
   useEffect(() => {
     fetchGroups();
     getUserData();
   }, [navigate]);
+
   const getUserData = async () => {
     try {
       const userData = await fetchCurrentUser();
@@ -63,13 +71,39 @@ function Posts() {
     try {
       const GroupId = "672094a2c276786346a14ad7";
       await createPost({ image, userId, description, groupId: GroupId });
+      await getAllPostsByGroupId({ groupId: GroupId });
+      await getAllPostsByUserId({ userId });
       alert("Post created successfully!");
-      // Optionally clear the form
       setImage(null);
       setDescription("");
     } catch (error) {
       console.error("Error creating post:", error);
       alert("Failed to create post. Please try again.");
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      await likeOnPost({ postId: "6723e6b17f5b7378658aa1cf", userId }); // Pass the post ID (abc) to like the post
+      alert("Post liked successfully!");
+    } catch (error) {
+      console.error("Error liking post:", error);
+      alert("Failed to like post. Please try again.");
+    }
+  };
+
+  const handleComment = async () => {
+    try {
+      await addComment({
+        postId: "6723e6b17f5b7378658aa1cf",
+        userId,
+        comment,
+      });
+      alert("Comment added successfully!");
+      setComment(""); // Clear the comment input after submission
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      alert("Failed to add comment. Please try again.");
     }
   };
 
@@ -121,6 +155,23 @@ function Posts() {
 
         <button type="submit">Create Post</button>
       </form>
+
+      {/* Like and Comment section */}
+      <div>
+        <h2>Post Actions</h2>
+        <button onClick={handleLike}>Like Post</button>
+
+        <div>
+          <label htmlFor="commentInput">Add a Comment:</label>
+          <input
+            type="text"
+            id="commentInput"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <button onClick={handleComment}>Comment</button>
+        </div>
+      </div>
     </div>
   );
 }

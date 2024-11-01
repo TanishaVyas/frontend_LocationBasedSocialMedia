@@ -50,9 +50,100 @@ export const getAllPosts = async () => {
     if (!response.ok) throw new Error("Failed to get posts");
 
     const result = await response.json();
-    console.log("Response from server:", result);
+    const post = result.data;
+    console.log("All Posts:", post);
 
-    return result.data || [];
+    return post || [];
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    return [];
+  }
+};
+
+export const getAllPostsByGroupId = async (groupId) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8080/post/getAllPostByGroupId",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(groupId),
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to get posts");
+
+    const result = await response.json();
+    const post = result.data;
+    console.log("All Posts by group Id:", post);
+
+    return post || [];
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    return [];
+  }
+};
+
+export const getAllPostsByUserId = async (UserId) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8080/post/getAllPostByUserId",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(UserId),
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to get posts");
+
+    const result = await response.json();
+    const post = result.data;
+    console.log("All Posts by User id :", post);
+
+    return post || [];
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    return [];
+  }
+};
+
+export const likeOnPost = async (PostId, userId) => {
+  try {
+    const response = await fetch("http://localhost:8080/post/likeOnPost", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(PostId, userId),
+    });
+
+    if (!response.ok) throw new Error("Failed to like a post:", response);
+
+    const result = await response.json();
+    const post = result.data;
+    console.log("post added sucessfully :", post);
+
+    return post || [];
+  } catch (error) {
+    console.error("Error fetching posts", error);
+    return [];
+  }
+};
+
+export const addComment = async (postId, userId, comment) => {
+  try {
+    const response = await fetch("http://localhost:8080/post/addComment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postId, userId, comment),
+    });
+
+    if (!response.ok) throw new Error("Failed to add comment");
+
+    const result = await response.json();
+    const post = result.data;
+    console.log("comment added :", post);
+
+    return post || [];
   } catch (error) {
     console.error("Error fetching posts", error);
     return [];
