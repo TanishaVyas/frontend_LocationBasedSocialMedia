@@ -15,6 +15,21 @@ export const fetchGroupById = async (id) => {
 };
 
 //find nearby groups implemented in dashboard.js http://localhost:3000/data
+/*
+example of data format :
+
+category: "restaurant|cafe"
+city: "pune"
+coordinates: {longitude: 74.0012536, latitude: 18.5900529}
+createdAt: "2024-10-29T07:54:10.525Z"
+description:""
+distance: 607.6763094903666
+name: "Shinde Chowpatty"
+__v: 0
+_id: "672094a2c276786346a14e46"
+
+*/
+//Description of all locations is empty. yet to delete description from db
 export const fetchNearbyGroups = async (latitude, longitude) => {
   try {
     const response = await fetch(
@@ -38,6 +53,21 @@ export const fetchNearbyGroups = async (latitude, longitude) => {
   }
 };
 
+/*
+example of data format :
+
+category: "restaurant|cafe"
+city: "pune"
+coordinates: {longitude: 74.0012536, latitude: 18.5900529}
+createdAt: "2024-10-29T07:54:10.525Z"
+description:""
+distance: 607.6763094903666
+name: "Shinde Chowpatty"
+__v: 0
+_id: "672094a2c276786346a14e46"
+
+*/
+//Description of all locations is empty. yet to delete description from db
 export const fetchNearbyGroupsByCategory = async (
   latitude,
   longitude,
@@ -68,6 +98,7 @@ export const joinGroup = async (userId, groupId) => {
   return response.data;
 };
 
+//find nearby groups (same format as above)
 export const getUserAndNearbyGroups = async (setUser, setGroups) => {
   try {
     const userData = await fetchCurrentUser();
