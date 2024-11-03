@@ -10,6 +10,7 @@ import {
   Divider,
   CircularProgress,
 } from "@mui/material";
+import { fetchCurrentUser } from "../services/UserService";
 
 const images = [
   "https://via.placeholder.com/150",
@@ -27,21 +28,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // Log token before making the request
-        const storedToken = localStorage.getItem("token");
-        console.log("Token used for fetchUser:", storedToken);
-
-        const response = await fetch(
-          "http://localhost:8080/auth/current_user",
-          {
-            headers: { Authorization: `Bearer ${storedToken}` },
-            credentials: "include",
-          }
-        );
-
-        if (!response.ok) throw new Error("Failed to fetch user data");
-
-        const userData = await response.json();
+        const userData = await fetchCurrentUser();
         console.log("Fetched user data:", userData);
         setUser(userData);
       } catch (error) {

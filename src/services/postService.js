@@ -1,4 +1,10 @@
 import { fetchCurrentUser } from "./UserService";
+
+//used in createpost.js http://localhost:3000/createpost
+/*
+everypage has userid of the active user u can get it from there (stored in local storage/ function fetchcurrentuser in userservice) 
+fetchNearByGroups in groupservice gives groupid too
+*/
 export const createPost = async ({ image, userId, description, groupId }) => {
   try {
     const imgBase64 = await new Promise((resolve, reject) => {
@@ -40,6 +46,26 @@ export const createPost = async ({ image, userId, description, groupId }) => {
   }
 };
 
+/*example format:
+
+comments: Array(1)   [0:{ 
+    comment: "yes "
+    createdAt: "2024-11-01T09:49:47.614Z"
+    userId: "6720781d989ac7ab22e46160"
+    _id: "6724a43bfac9c4a31e36aa35"
+    }
+  ]
+createdAt: "2024-10-31T20:21:05.634Z"
+fromSameLocation: false
+groupId: "672094a2c276786346a14ad8"
+img: "iVBORw0KGgoAAAANSUhEUgAABKoAAADnCAYAAAA+ab6yAAAAA
+imgdesc: "blahblahblahblahblha"
+likeCounter: 3
+likedBy: (2) ['6720781d989ac7ab22e46160', '671fcdb3c9104e9b72d72081']
+userId: "6720781d989ac7ab22e46160"
+__v: 2
+_id: "6723e6b17f5b7378658aa1cf"
+ */
 export const getAllPosts = async () => {
   try {
     const response = await fetch("http://localhost:8080/post/getAllPost", {
@@ -111,7 +137,6 @@ export const getAllPostsByUserId = async (UserId) => {
 
 export const getAllPostByDistance = async (setUser) => {
   try {
-    // Fetch the current user data
     const userData = await fetchCurrentUser();
     if (userData) {
       setUser(userData);
@@ -127,7 +152,7 @@ export const getAllPostByDistance = async (setUser) => {
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ latitude, longitude }), // Corrected body format
+                body: JSON.stringify({ latitude, longitude }),
               }
             );
 

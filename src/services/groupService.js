@@ -14,6 +14,7 @@ export const fetchGroupById = async (id) => {
   return response.data;
 };
 
+//find nearby groups implemented in dashboard.js http://localhost:3000/data
 export const fetchNearbyGroups = async (latitude, longitude) => {
   try {
     const response = await fetch(
@@ -28,7 +29,7 @@ export const fetchNearbyGroups = async (latitude, longitude) => {
     if (!response.ok) throw new Error("Failed to fetch nearby groups");
 
     const result = await response.json();
-    console.log("Response from server:", result);
+    console.log("Response from server:", result.data);
 
     return result.data || [];
   } catch (error) {
@@ -58,6 +59,7 @@ export const fetchNearbyGroupsByCategory = async (
   }
 };
 
+//join a group implemented in dashboard.js http://localhost:3000/data
 export const joinGroup = async (userId, groupId) => {
   const response = await axios.post("http://localhost:8080/user/join-group", {
     userId,

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchCurrentUser } from "../services/UserService.js";
+import { fetchNearbyGroups } from "../services/groupService.js";
 import {
   createPost,
   getAllPostsByGroupId,
@@ -12,12 +13,16 @@ import {
 function Posts() {
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState("abc"); // Default group ID
+  const [selectedGroup, setSelectedGroup] = useState("");
   const [username, setUsername] = useState("");
   const [image, setImage] = useState(null);
   const [description, setDescription] = useState("");
   const [userId, setUserId] = useState("");
-  const [comment, setComment] = useState(""); // New state for comment
+  const [comment, setComment] = useState("");
+
+  const [user, setUser] = useState(null);
+  const [userLatitude, setUserLatitude] = useState(null);
+  const [userLongitude, setUserLongitude] = useState(null);
 
   useEffect(() => {
     fetchGroups();
@@ -41,18 +46,16 @@ function Posts() {
   };
 
   const fetchGroups = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/get-groups");
-      if (response.ok) {
-        const data = await response.json();
-        setGroups(data.groups);
-      } else {
-        console.error("Failed to fetch groups");
-        alert("Error fetching groups. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred while fetching groups.");
+    if (user && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLatitude(latitude);
+        setUserLongitude(longitude);
+
+        const nearbyGroups = await fetchNearbyGroups(latitude, longitude);
+        console.log("fetching groups:", nearbyGroups);
+        setGroups(nearbyGroups);
+      });
     }
   };
 
@@ -84,7 +87,7 @@ function Posts() {
 
   const handleLike = async () => {
     try {
-      await likeOnPost({ postId: "6723e6b17f5b7378658aa1cf", userId }); // Pass the post ID (abc) to like the post
+      await likeOnPost({ postId: "6723e6b17f5b7378658aa1cf", userId }); // Pass the post ID to like the post
       alert("Post liked successfully!");
     } catch (error) {
       console.error("Error liking post:", error);
@@ -123,8 +126,8 @@ function Posts() {
             672094a2c276786346a14ad7
           </option>
           {groups.map((group) => (
-            <option key={group.id} value="672094a2c276786346a14ad7">
-              672094a2c276786346a14ad7
+            <option key={group.id} value={group._id}>
+              {group.name}
             </option>
           ))}
         </select>
