@@ -11,35 +11,40 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { fetchCurrentUser } from "../services/UserService";
-
-const images = [
-  "https://via.placeholder.com/150",
-  "https://via.placeholder.com/150",
-  "https://via.placeholder.com/150",
-  "https://via.placeholder.com/150",
-];
+import {getAllPostsByUserId} from "../services/postService";
+import PostViewer from "./PostViewer";
 
 function Dashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [groups, setGroups] = useState([]);
+  const [images, setImages] = useState([]); // Store images here
+  const [userId, setUserId] = useState("");
+  const [posts, setPosts] = useState([]); // Store posts here
 
-  useEffect(() => {
-    const fetchUser = async () => {
+
+   useEffect(() => {
+    const fetchUserData = async () => {
       try {
         const userData = await fetchCurrentUser();
-        console.log("Fetched user data:", userData);
         setUser(userData);
+        
+        // Use userData._id directly
+        if (userData._id) {
+          const userPosts = await getAllPostsByUserId({ userId: userData._id });
+          console.log("hi");
+          setPosts(userPosts); 
+        }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching user data or posts:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchUser();
-  }, []);
 
+    fetchUserData();
+  }, []);
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("token");
@@ -168,7 +173,7 @@ function Dashboard() {
           Posts
         </Typography>
         <Divider sx={{ mb: 2 }} />
-        <ImageViewer images={images} />
+        <PostViewer posts={posts} />
       </Box>
 
       {/* Edit Profile Modal */}

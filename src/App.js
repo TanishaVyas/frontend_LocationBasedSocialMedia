@@ -8,7 +8,7 @@ import SignupWithGoogle from "./components/SignupWithGoogle";
 import Dashboard from "./components/Dashboard";
 import UserProfile from "./components/UserProfile";
 import LocationFinder from "./components/locationfinder";
-import Group from "./components/Groupdetail";
+import GroupPage from "./components/GroupPage";
 import Admin from "./components/Admin";
 import FooterNav from "./components/FooterNav";
 import Posts from "./components/CreatePosts";
@@ -18,7 +18,8 @@ import { useEffect } from "react";
 import { AuthProvider } from "./Authguard/AuthContext";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
+import HomePage from './components/HomePage';
+import SearchGroup from './components/SearchGroup';
 function App() {
   return (
     <AuthProvider>
@@ -95,22 +96,26 @@ function AppRoutes() {
   }
   return (
     <>
-      <Routes>
-        <Route path="/" element={<SignupWithGoogle />} />
-        <Route path="/tokenhandlerUser" element={<TokenHandler />} />
-        <Route
-          path="/dashboard"
-          element={<PrivateRoute element={UserProfile} />}
-        />
-        <Route path="/data" element={<PrivateRoute element={Dashboard} />} />
-        <Route path="/admin" element={<PrivateRoute element={Admin} />} />
-        <Route path="/createpost" element={<PrivateRoute element={Posts} />} />
-        <Route
-          path="/location-finder"
-          element={<PrivateRoute element={LocationFinder} />}
-        />
-        <Route path="/group/:id" element={<PrivateRoute element={Group} />} />
-      </Routes>
+      <div style={{ paddingBottom: '56px' }}> {/* Adjust this value based on footer height */}
+        <Routes>
+          <Route path="/" element={<SignupWithGoogle />} />
+          <Route path="/tokenhandlerUser" element={<TokenHandler />} />
+          <Route
+            path="/dashboard"
+            element={<PrivateRoute element={UserProfile} />}
+          />
+          <Route path="/data" element={<PrivateRoute element={Dashboard} />} />
+          <Route path="/admin" element={<PrivateRoute element={Admin} />} />
+          <Route path="/createpost" element={<PrivateRoute element={Posts} />} />
+          <Route path="/home" element={<PrivateRoute element={HomePage} />} />
+          <Route path="/search" element={<PrivateRoute element={SearchGroup} />} />
+          <Route
+            path="/location-finder"
+            element={<PrivateRoute element={LocationFinder} />}
+          />
+          <Route path="/group/:groupId" element={<PrivateRoute element={GroupPage} />} />
+        </Routes>
+      </div>
 
       {location.pathname !== "/" && <FooterNav />}
     </>

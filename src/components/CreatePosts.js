@@ -72,7 +72,7 @@ function Posts() {
     }
 
     try {
-      const GroupId = "672094a2c276786346a14ad7";
+      const GroupId = "6720808479cf1d4fd80731ec";
       await createPost({ image, userId, description, groupId: GroupId });
       await getAllPostsByGroupId({ groupId: GroupId });
       await getAllPostsByUserId({ userId });
