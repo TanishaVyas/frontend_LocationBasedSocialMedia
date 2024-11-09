@@ -20,6 +20,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import SearchGroup from "./components/SearchGroup";
+import MoodChecker from "./components/MoodChecker";
 function App() {
   return (
     <AuthProvider>
@@ -122,6 +123,7 @@ function AppRoutes() {
             element={<PrivateRoute element={SearchGroup} navigateTo="posts" />}
           />
           <Route path="/posts/:groupId" element={<Posts />} />
+          <Route path="/mood" element={<MoodChecker />} />
           <Route
             path="/location-finder"
             element={<PrivateRoute element={LocationFinder} />}
