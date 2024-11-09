@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import GroupCard from "./GroupCard";
 import Grid from "@mui/material/Grid2";
 import TextField from "@mui/material/TextField";
@@ -7,15 +7,17 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
+import Slider from "@mui/material/Slider";
 import { fetchNearbyGroups } from "../services/groupService";
 import { fetchAllCategories } from "../services/groupService";
 
-const SearchGroup = () => {
+const SearchGroup = ({ navigateTo }) => {
   const [user, setUser] = useState(null);
   const [allGroups, setAllGroups] = useState([]); // All groups
   const [groups, setGroups] = useState([]); // Filtered groups to display
   const [searchInput, setSearchInput] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(""); // New state for category
+  const [distanceFilter, setDistanceFilter] = useState(1); // New state for distance filter
   const [message, setMessage] = useState("Nearby groups");
   const [categories, setCategories] = useState([]);
 
@@ -38,18 +40,24 @@ const SearchGroup = () => {
   // Handle search input change
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
-    filterGroups(event.target.value, selectedCategory);
+    filterGroups(event.target.value, selectedCategory, distanceFilter);
   };
 
   // Handle category selection change
   const handleCategoryChange = (event) => {
     const category = event.target.value;
     setSelectedCategory(category);
-    filterGroups(searchInput, category);
+    filterGroups(searchInput, category, distanceFilter);
   };
 
-  // Function to filter groups by search input and category
-  const filterGroups = (name, category) => {
+  // Handle distance slider change
+  const handleDistanceChange = (event, newValue) => {
+    setDistanceFilter(newValue);
+    filterGroups(searchInput, selectedCategory, newValue);
+  };
+
+  // Function to filter groups by search input, category, and distance
+  const filterGroups = (name, category, maxDistance) => {
     let filteredGroups = allGroups;
 
     // Search filter
@@ -69,6 +77,11 @@ const SearchGroup = () => {
       );
       setMessage(`Filtering groups in category "${category}"`);
     }
+
+    // Distance filter
+    filteredGroups = filteredGroups.filter(
+      (group) => group.distance <= maxDistance // Convert km to meters
+    );
 
     setGroups(filteredGroups);
   };
@@ -110,6 +123,19 @@ const SearchGroup = () => {
         </Select>
       </FormControl>
 
+      {/* Distance Slider */}
+      <FormControl style={{ marginBottom: "20px", width: "100%", maxWidth: "600px" }}>
+        <Typography gutterBottom>Filter by Distance (km)</Typography>
+        <Slider
+          value={distanceFilter}
+          onChange={handleDistanceChange}
+          aria-labelledby="distance-slider"
+          min={1}
+          max={10}
+          valueLabelDisplay="auto"
+        />
+      </FormControl>
+
       {/* Dynamic Message */}
       <Typography variant="h6" gutterBottom>
         {message}
@@ -119,7 +145,7 @@ const SearchGroup = () => {
       <Grid container spacing={2} justifyContent="center">
         {groups.map((group) => (
           <Grid item xs={12} sm={6} md={4} key={group._id}>
-            <GroupCard group={group} size="large" />
+            <GroupCard group={group} size="large" navigateTo={navigateTo} />
           </Grid>
         ))}
       </Grid>

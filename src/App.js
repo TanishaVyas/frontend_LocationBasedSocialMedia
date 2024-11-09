@@ -18,8 +18,8 @@ import { useEffect } from "react";
 import { AuthProvider } from "./Authguard/AuthContext";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import HomePage from './components/HomePage';
-import SearchGroup from './components/SearchGroup';
+import HomePage from "./components/HomePage";
+import SearchGroup from "./components/SearchGroup";
 function App() {
   return (
     <AuthProvider>
@@ -96,7 +96,9 @@ function AppRoutes() {
   }
   return (
     <>
-      <div style={{ paddingBottom: '56px' }}> {/* Adjust this value based on footer height */}
+      <div style={{ paddingBottom: "56px" }}>
+        {" "}
+        {/* Adjust this value based on footer height */}
         <Routes>
           <Route path="/" element={<SignupWithGoogle />} />
           <Route path="/tokenhandlerUser" element={<TokenHandler />} />
@@ -106,14 +108,28 @@ function AppRoutes() {
           />
           <Route path="/data" element={<PrivateRoute element={Dashboard} />} />
           <Route path="/admin" element={<PrivateRoute element={Admin} />} />
-          <Route path="/createpost" element={<PrivateRoute element={Posts} />} />
+          <Route
+            path="/createpost"
+            element={<PrivateRoute element={Posts} />}
+          />
           <Route path="/home" element={<PrivateRoute element={HomePage} />} />
-          <Route path="/search" element={<PrivateRoute element={SearchGroup} />} />
+          <Route
+            path="/search"
+            element={<PrivateRoute element={SearchGroup} navigateTo="group" />}
+          />
+          <Route
+            path="/add"
+            element={<PrivateRoute element={SearchGroup} navigateTo="posts" />}
+          />
+          <Route path="/posts/:groupId" element={<Posts />} />
           <Route
             path="/location-finder"
             element={<PrivateRoute element={LocationFinder} />}
           />
-          <Route path="/group/:groupId" element={<PrivateRoute element={GroupPage} />} />
+          <Route
+            path="/group/:groupId"
+            element={<PrivateRoute element={GroupPage} />}
+          />
         </Routes>
       </div>
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardMedia, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const GroupCard = ({ group, size = 'medium' }) => {
+const GroupCard = ({ group, size = 'medium', navigateTo }) => {
   const navigate = useNavigate(); // Initialize navigate
 
   // Define size variants
@@ -15,8 +15,8 @@ const GroupCard = ({ group, size = 'medium' }) => {
   const cardSize = sizes[size] || sizes.medium; // Default to 'medium' if no valid size is provided
 
   const handleCardClick = () => {
-    console.log(group._id);
-    navigate(`/group/${group._id}`); // Navigate to the group's detail page
+    const path = navigateTo === "posts" ? `/posts/${group._id}` : `/group/${group._id}`;
+    navigate(path); // Dynamically navigate based on `navigateTo` prop
   };
 
   return (
