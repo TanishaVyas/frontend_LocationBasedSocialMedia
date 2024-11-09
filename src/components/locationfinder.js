@@ -155,14 +155,15 @@ const LocationForm = () => {
       setOpenSnackbar(true);
       return;
     }
+    console.log(city, category, mainCategory);
 
     try {
       const response = await axios.post(
         "http://localhost:8080/location/fetch-locations",
         {
           city,
-          mainCategory,
           category,
+          mainCategory,
         }
       );
       console.log("Locations fetched:", response.data);
