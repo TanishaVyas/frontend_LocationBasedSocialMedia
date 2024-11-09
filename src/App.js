@@ -75,7 +75,7 @@ function AppRoutes() {
             if (userData.type === "user") {
               navigate("/dashboard", { replace: true });
             } else if (userData.type === "admin") {
-              navigate("/location-finder", { replace: true });
+              navigate("/admin", { replace: true });
             }
           } catch (error) {
             console.error("Token decode error:", error);
@@ -105,32 +105,55 @@ function AppRoutes() {
           <Route path="/tokenhandlerUser" element={<TokenHandler />} />
           <Route
             path="/dashboard"
-            element={<PrivateRoute element={UserProfile} />}
+            element={<PrivateRoute element={UserProfile} roles={["user"]} />}
           />
-          <Route path="/data" element={<PrivateRoute element={Dashboard} />} />
-          <Route path="/admin" element={<PrivateRoute element={Admin} />} />
+          <Route
+            path="/data"
+            element={<PrivateRoute element={Dashboard} roles={["user"]} />}
+          />
+          <Route
+            path="/admin"
+            element={<PrivateRoute element={Admin} roles={["admin"]} />}
+          />
           <Route
             path="/createpost"
-            element={<PrivateRoute element={Posts} />}
+            element={<PrivateRoute element={Posts} roles={["user"]} />}
           />
-          <Route path="/home" element={<PrivateRoute element={HomePage} />} />
+          <Route
+            path="/home"
+            element={<PrivateRoute element={HomePage} roles={["user"]} />}
+          />
           <Route
             path="/search"
-            element={<PrivateRoute element={SearchGroup} navigateTo="group" />}
+            element={
+              <PrivateRoute
+                element={SearchGroup}
+                navigateTo="group"
+                roles={["user"]}
+              />
+            }
           />
           <Route
             path="/add"
-            element={<PrivateRoute element={SearchGroup} navigateTo="posts" />}
+            element={
+              <PrivateRoute
+                element={SearchGroup}
+                navigateTo="posts"
+                roles={["user"]}
+              />
+            }
           />
-          <Route path="/posts/:groupId" element={<Posts />} />
-          <Route path="/mood" element={<MoodChecker />} />
+          <Route path="/posts/:groupId" element={<Posts />} roles={["user"]} />
+          <Route path="/mood" element={<MoodChecker />} roles={["user"]} />
           <Route
             path="/location-finder"
-            element={<PrivateRoute element={LocationFinder} />}
+            element={
+              <PrivateRoute element={LocationFinder} roles={["admin"]} />
+            }
           />
           <Route
             path="/group/:groupId"
-            element={<PrivateRoute element={GroupPage} />}
+            element={<PrivateRoute element={GroupPage} roles={["user"]} />}
           />
         </Routes>
       </div>
