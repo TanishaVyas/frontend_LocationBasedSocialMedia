@@ -78,44 +78,55 @@ function GroupPage() {
       {/* Left Section: Group Profile */}
       <Box
         sx={{
-          flex: 1,
           display: "flex",
-          flexDirection: "column",
-          bgcolor: "background.paper",
-          p: 3,
-          borderRadius: 2,
-          width: { xs: "100%", sm: "80%", md: "25%", lg: "20%" }, // Match the width from Dashboard
+          justifyContent: "center",
+          alignItems: "center",
+          width: { xs: "100%", sm: "80%", md: "25%", lg: "30%" },
+          bgcolor: "background.default",
         }}
       >
-        <Typography variant="h6" color="textPrimary">
-          {name}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Category:</strong> {category}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>City:</strong> {city}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Distance:</strong> {distance} meters
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Description:</strong>{" "}
-          {description || "No description available"}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Created At:</strong>{" "}
-          {new Date(createdAt).toLocaleDateString()}
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          href={`https://www.google.com/maps?q=${coordinates.latitude},${coordinates.longitude}`}
-          target="_blank"
-          sx={{ mt: 2 }}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: { xs: "100%", sm: "80%", md: "25%", lg: "100%" },
+            bgcolor: "background.paper",
+            p: { xs: 2, sm: 3 },
+            borderRadius: 2,
+            justifyContent: "center",
+          }}
         >
-          View on Google Maps
-        </Button>
+          <Typography variant="h6" color="textPrimary">
+            {name}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+            <strong>Category:</strong> {category}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+            <strong>City:</strong> {city}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+            <strong>Distance:</strong> {distance} meters
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+            <strong>Description:</strong>{" "}
+            {description || "No description available"}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+            <strong>Created At:</strong>{" "}
+            {new Date(createdAt).toLocaleDateString()}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            href={`https://www.google.com/maps?q=${coordinates.latitude},${coordinates.longitude}`}
+            target="_blank"
+            sx={{ mt: 2 }}
+          >
+            View on Google Maps
+          </Button>
+        </Box>
       </Box>
       {/* Right Section: Group Posts */}
       <Box

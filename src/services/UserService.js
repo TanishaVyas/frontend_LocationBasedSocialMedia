@@ -26,6 +26,28 @@ export async function fetchCurrentUser() {
     return userData;
 }
 
+export async function getUserById(userId) {
+    try {
+        const response = await fetch("https://backend-location-social-media.onrender.com/user/UserbyId", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userID: userId }),
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch user data");
+
+        const userData = await response.json();
+        console.log("Fetched user data:", userData);
+
+        return userData || {};
+    } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        return null;
+    }
+}
+
 //used in editprofile.js
 /*updated user includes:
 const [updatedUser, setUpdatedUser] = useState({

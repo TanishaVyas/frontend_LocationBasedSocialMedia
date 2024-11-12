@@ -9,6 +9,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useNavigate } from 'react-router-dom';
+import AddReactionIcon from '@mui/icons-material/AddReaction';
 function FooterNav() {
 
   const navigate = useNavigate();
@@ -51,26 +52,32 @@ function FooterNav() {
     >
      <BottomNavigationAction
         label="Home"
-        icon={<HomeIcon />}
+        icon={<HomeIcon  sx={{ fontSize: { xs: 20, sm: 24 } }}/>}
         onClick={() => navigate('/home')}
       />
       <BottomNavigationAction
         label="Search"
-        icon={<SearchIcon />}
+        icon={<SearchIcon  sx={{ fontSize: { xs: 20, sm: 24 } }}/>}
         onClick={() => navigate('/search')}
+      />
+       <BottomNavigationAction
+        label="Mood"
+        icon={<AddReactionIcon  sx={{ fontSize: { xs: 20, sm: 24 } }} />}
+        onClick={() => navigate('/mood')}
       />
       <BottomNavigationAction
         label="Add"
-        icon={<AddCircleIcon />}
+        icon={<AddCircleIcon  sx={{ fontSize: { xs: 20, sm: 24 } }}/>}
         onClick={() => navigate('/add')}
       />
+     
       <BottomNavigationAction
         label="Profile"
         icon={
           <Avatar
             src={user?.profilePic || "logo192.png"}
             alt="Profile"
-            sx={{ width: 24, height: 24 }}
+            sx={{ width: { xs: 20, sm: 24 }, height: { xs: 20, sm: 24 } }}
           />
         }
         onClick={() => navigate('/dashboard')}

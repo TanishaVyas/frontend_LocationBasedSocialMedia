@@ -78,6 +78,27 @@ export const getAllPosts = async() => {
     }
 };
 
+export const deletePost = async(postId) => {
+    try {
+        const response = await fetch("https://backend-location-social-media.onrender.com/post/deletePost", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ postId }),
+        });
+
+        if (!response.ok) throw new Error("Failed to delete post");
+
+        const result = await response.json();
+        console.log("Post deleted successfully:", result);
+
+        return result || {};
+    } catch (error) {
+        console.error("Error deleting post:", error);
+        return null;
+    }
+};
 export const getAllPostsByGroupId = ({ groupId }) => {
     return new Promise(async(resolve, reject) => {
         try {

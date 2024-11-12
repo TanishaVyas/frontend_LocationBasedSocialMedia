@@ -1,107 +1,284 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, IconButton, Box } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import CommentIcon from '@mui/icons-material/Comment';
-import LocationOnIcon from '@mui/icons-material/LocationOn'; // Importing the location icon
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  IconButton,
+  Box,
+  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  InputAdornment,
+} from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import CommentIcon from "@mui/icons-material/Comment";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { fetchGroupDetails } from "../services/groupService";
+import { likeOnPost, addComment, deletePost } from "../services/postService";
+import { getUserById } from "../services/UserService";
+import { useNavigate } from "react-router-dom";
 
-function Post({ post, size = 'medium' }) {
-  const [groupName, setGroupName] = useState('');
+function Post({ post, size = "medium", allowDelete = false }) {
+  const [groupName, setGroupName] = useState("");
+  const [user, setUser] = useState(null);
+  const [liked, setLiked] = useState(false);
+  const [likeCounter, setLikeCounter] = useState(post.likeCounter);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState(post.comments || []);
+  const [postUser, setPostUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch group details using the groupId from post
-    const fetchGroup = async () => {
-      try {
-        if(post.groupId.name==null){
-        const groupData = await fetchGroupDetails({groupId:post.groupId});
-        setGroupName(groupData.name);}
-        else{
-          setGroupName(post.groupId.name);
+    const fetchUser = async () => {
+      const response = await fetch(
+        "https://backend-location-social-media.onrender.com/auth/current_user",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          credentials: "include",
         }
-         // Assuming the group name is in 'name' field
-      } catch (error) {
-        console.error('Error fetching group data:', error);
+      );
+      const userData = await response.json();
+      setUser(userData);
+      if (post.likedBy.includes(userData._id)) {
+        setLiked(true);
       }
     };
+    fetchUser();
+  }, []);
 
+  useEffect(() => {
+    const fetchPostUser = async () => {
+      try {
+        const userData = await getUserById(post.userId);
+        setPostUser(userData);
+      } catch (error) {
+        console.error("Error fetching post user:", error);
+      }
+    };
+    if (post.userId) {
+      fetchPostUser();
+    }
+  }, [post.userId]);
+
+  const handleLike = async () => {
+    try {
+      const updatedPost = await likeOnPost({
+        postId: post._id,
+        userId: user._id,
+      });
+      setLiked(!liked);
+      setLikeCounter(updatedPost.likeCounter);
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
+  const handleComment = async () => {
+    try {
+      const newComment = await addComment({
+        postId: post._id,
+        userId: user._id,
+        comment: commentText,
+      });
+      setComments((prevComments) => [...prevComments, newComment]);
+      setCommentText("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deletePost(post._id);
+      console.log("Post deleted successfully");
+      alert("Post deleted successfully!");
+      window.location.reload();
+      // Handle post deletion (e.g., update parent component's state or UI)
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchGroup = async () => {
+      try {
+        if (post.groupId.name == null) {
+          const groupData = await fetchGroupDetails({ groupId: post.groupId });
+          setGroupName(groupData.name);
+        } else {
+          setGroupName(post.groupId.name);
+        }
+      } catch (error) {
+        console.error("Error fetching group data:", error);
+      }
+    };
     if (post.groupId) {
       fetchGroup();
     }
   }, [post.groupId]);
 
-  // Dynamically set the size based on the `size` prop
   const getCardSize = () => {
     switch (size) {
-      case 'small':
-        return { width: 250, height: 400 }; // Smaller card size
-      case 'large':
-        return { width: 400, height: 550 }; // Larger card size
+      case "small":
+        return { width: "100%", maxWidth: 400, height: 400 };
+      case "large":
+        return { width: "100%", maxWidth: 550, height: 550 };
       default:
-        return { width: 345, height: 500 }; // Default medium size
+        return { width: "100%", maxWidth: 500, height: 500 };
     }
   };
 
   const cardSize = getCardSize();
-
-  // Calculate image height as a proportion of the card width (for example, 3:4 aspect ratio)
-  const getImageHeight = () => {
-    const aspectRatio = 3 / 4; // Change this if you need a different ratio (e.g., 16/9)
-    return cardSize.width * aspectRatio;
-  };
-
-  const imageHeight = getImageHeight();
+  const imageHeight = cardSize.height * (3 / 4);
 
   return (
-    <Card sx={{ width: cardSize.width, height: cardSize.height, marginBottom: 2, position: 'relative' }}>
-      
-      {/* Box to show Group Name */}
+    <Card
+      sx={{
+        width: cardSize.width,
+        maxWidth: cardSize.maxWidth,
+        marginBottom: 2,
+        position: "relative",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       {groupName && (
         <Box
           sx={{
-            width: '100%',
-            backgroundColor: 'grey', // Black background
-            color: 'white',
-            textAlign: 'center',
-
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingTop: "0.8rem",
+            paddingBottom: "0.8rem",
+            width: "100%",
+            backgroundColor: "white",
+            color: "black",
+            textAlign: "center",
+            borderColor: "#D9D9D9",
+            borderBottom: "1px solid #000000",
           }}
         >
-          <Typography variant="body2">
+          <Typography
+            onClick={() => navigate(`/group/${post.groupId._id}`)}
+            variant="h6"
+            sx={{
+              cursor: "pointer",
+              flex: 1,
+              textAlign: "left",
+              paddingLeft: 2,
+            }}
+          >
             {groupName}
           </Typography>
+          {allowDelete && post.userId === user?._id && (
+        
+          
+              <IconButton onClick={handleDelete}>
+                <DeleteIcon color="error" />
+              </IconButton>
+            
+          )}
         </Box>
       )}
 
-      <CardMedia
-        component="img"
+      <Box
         sx={{
-          height: imageHeight,
-          objectFit: 'cover', // Ensure the image maintains its aspect ratio and fits within the car
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
-        image={post.img} // Assuming img is a base64 string or a URL
-        alt="Post Image"
-      />
-      <CardContent sx={{ paddingTop: '16px' }}>
-        <Typography variant="h6" component="div" sx={{ wordBreak: 'break-word' }}>
+      >
+        <CardMedia
+          component="img"
+          sx={{
+            width: imageHeight,
+            height: imageHeight,
+            objectFit: "cover",
+          }}
+          image={post.img}
+          alt="Post Image"
+        />
+      </Box>
+      <CardContent
+        sx={{
+          flex: "1 1 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+        }}
+      >
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ wordBreak: "break-word" }}
+        >
           {post.imgdesc}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Likes: {post.likeCounter}
+          By: {postUser?.name || "Unknown"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Comments: {post.comments.length}
+          Likes: {likeCounter}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Comments: {comments.length}
         </Typography>
 
-        {/* Location status: Red or Green depending on 'fromSameLocation' */}
-        <IconButton aria-label="location" sx={{ color: post.fromSameLocation ? 'green' : 'red' }}>
-          <LocationOnIcon />
-        </IconButton>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <IconButton
+            aria-label="location"
+            sx={{ color: post.fromSameLocation ? "green" : "red" }}
+          >
+            <LocationOnIcon />
+          </IconButton>
+          <IconButton aria-label="like" onClick={handleLike} disabled={liked}>
+            <FavoriteIcon sx={{ color: liked ? "red" : "default" }} />
+          </IconButton>
+          <TextField
+            variant="outlined"
+            placeholder="Add a comment..."
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            size="small"
+            sx={{ flexGrow: 1 }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton color="primary" onClick={handleComment}>
+                    <CommentIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
 
-        <IconButton aria-label="like">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="comment">
-          <CommentIcon />
-        </IconButton>
+        <List
+          sx={{
+            maxHeight: 150,
+            overflow: "auto",
+            marginTop: 1,
+            scrollbarWidth: "none",
+          }}
+        >
+          {comments.map((comment) => (
+            <ListItem
+              key={comment._id}
+              sx={{ paddingLeft: 0, paddingRight: 0 }}
+            >
+              <ListItemText
+                primary={comment.comment}
+                secondary={new Date(comment.createdAt).toLocaleString()}
+                primaryTypographyProps={{ variant: "body2" }}
+                secondaryTypographyProps={{ variant: "caption" }}
+              />
+            </ListItem>
+          ))}
+        </List>
       </CardContent>
     </Card>
   );
