@@ -13,8 +13,7 @@ import { useLocation } from "react-router-dom";
 const SearchGroup = ({ navigateTo }) => {
 
   const location = useLocation();
-  const { category } = location.state || {}; // Receive the category from the state
-
+  const { category } = location.state || {};
   const [user, setUser] = useState(null);
   const [allGroups, setAllGroups] = useState([]);
   const [groups, setGroups] = useState([]);

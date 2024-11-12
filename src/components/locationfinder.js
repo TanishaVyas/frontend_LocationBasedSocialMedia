@@ -33,6 +33,7 @@ const mainCategories = {
     "restaurant",
     "school",
     "university",
+    "college",
   ],
   leisure: [
     "park",
