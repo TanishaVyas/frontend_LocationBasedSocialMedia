@@ -6,7 +6,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 const SignupWithGoogle = () => {
   // Redirects to Google OAuth for Sign-In
   const handleGoogleSignup = () => {
-    window.location.href = "http://localhost:8080/auth/google?flow=signin";
+    window.location.href = "https://backend-location-social-media.onrender.com/auth/google?flow=signin";
   };
   // After redirect from Google OAuth, handle the token here
   useEffect(() => {

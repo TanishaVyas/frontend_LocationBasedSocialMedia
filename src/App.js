@@ -12,6 +12,7 @@ import GroupPage from "./components/GroupPage";
 import Admin from "./components/Admin";
 import FooterNav from "./components/FooterNav";
 import Posts from "./components/CreatePosts";
+import Topbar from "./components/Topbar";
 import PrivateRoute from "./Authguard/PrivateRoute";
 import { useAuth } from "./Authguard/AuthContext";
 import { useEffect } from "react";
@@ -21,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 import HomePage from "./components/HomePage";
 import SearchGroup from "./components/SearchGroup";
 import MoodChecker from "./components/MoodChecker";
+import { useRef, useState } from "react";
+
 function App() {
   return (
     <AuthProvider>
@@ -32,6 +35,23 @@ function App() {
 }
 
 function AppRoutes() {
+  // Refs for Topbar and FooterNav
+  const topbarRef = useRef(null);
+  const footerRef = useRef(null);
+
+  // State for storing their heights
+  const [topbarHeight, setTopbarHeight] = useState(0);
+  const [footerHeight, setFooterHeight] = useState(0);
+
+  // UseEffect to set heights after components mount
+  useEffect(() => {
+    if (topbarRef.current) {
+      setTopbarHeight(topbarRef.current.offsetHeight); // Get Topbar height
+    }
+    if (footerRef.current) {
+      setFooterHeight(footerRef.current.offsetHeight); // Get FooterNav height
+    }
+  }, []);
   const location = useLocation();
 
   function TokenHandler() {
@@ -47,21 +67,22 @@ function AppRoutes() {
         if (token) {
           // Store token in localStorage
           localStorage.setItem("token", token);
-
+          console.log("token:", token);
           // Decode and set user
           try {
             const decoded = jwtDecode(token);
+            console.log("decoded:", decoded, token);
             setUser(decoded);
 
             // Fetch current user data
             const response = await fetch(
-              "http://localhost:8080/auth/current_user",
+              "https://backend-location-social-media.onrender.com/auth/current_user",
               {
                 headers: { Authorization: `Bearer ${token}` },
                 credentials: "include",
               }
             );
-
+            console.log(response);
             if (!response.ok) throw new Error("Failed to fetch user data");
 
             const userData = await response.json();
@@ -97,9 +118,15 @@ function AppRoutes() {
   }
   return (
     <>
-      <div style={{ paddingBottom: "56px" }}>
+      <div
+        style={{
+          paddingTop: topbarHeight ? `${topbarHeight}px` : "64px", // Default fallback height for Topbar
+          paddingBottom: footerHeight ? `${footerHeight}px` : "56px", // Default fallback height for FooterNav
+        }}
+      >
         {" "}
         {/* Adjust this value based on footer height */}
+        {location.pathname !== "/" && <Topbar />}
         <Routes>
           <Route path="/" element={<SignupWithGoogle />} />
           <Route path="/tokenhandlerUser" element={<TokenHandler />} />

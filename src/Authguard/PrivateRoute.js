@@ -19,7 +19,7 @@ const PrivateRoute = ({ element: Component, roles, ...rest }) => {
 
       try {
         const response = await fetch(
-          "http://localhost:8080/auth/current_user",
+          "https://backend-location-social-media.onrender.com/auth/current_user",
           {
             headers: { Authorization: `Bearer ${token}` },
             credentials: "include",

@@ -24,7 +24,7 @@ function Admin() {
   };
 
   const handleLogout = () => {
-    window.location.href = "http://localhost:8080/auth/logout";
+    window.location.href = "https://backend-location-social-media.onrender.com/auth/logout";
   };
 
   const handleSnackbarClose = () => {

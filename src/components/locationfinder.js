@@ -135,7 +135,7 @@ const LocationForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/location/fetch-locations",
+        "https://backend-location-social-media.onrender.com/location/fetch-locations",
         {
           city,
           category,

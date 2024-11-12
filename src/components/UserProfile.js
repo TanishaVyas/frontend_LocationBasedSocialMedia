@@ -48,7 +48,7 @@ function Dashboard() {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("token");
-    window.location.href = "http://localhost:8080/auth/logout";
+    window.location.href = "https://backend-location-social-media.onrender.com/auth/logout";
   };
 
   const handleEditToggle = () => setIsEditing((prev) => !prev);
@@ -104,59 +104,63 @@ function Dashboard() {
     >
       {/* Left Section: User Profile */}
       <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: { xs: "100%", md: "20%" },
-          bgcolor: "background.paper",
-          p: 3,
-          borderRadius: 2,
-        }}
-      >
-        <Avatar
-          alt={user.username}
-          src={user.profilePic}
-          sx={{ width: 100, height: 100, mb: 2 }}
-        />
-        <Typography variant="h6" color="textPrimary">
-          {user.username}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          {user.name}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          {user.email}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          {user.phone}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          {user.bio}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          {user.dob ? new Date(user.dob).toLocaleDateString("en-GB") : "N/A"}
-        </Typography>
-        <Button
-          onClick={handleEditToggle}
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }}
-        >
-          Edit Profile
-        </Button>
-        <Button
-          onClick={handleLogout}
-          disabled={isLoading}
-          variant="contained"
-          color="error"
-          fullWidth
-          sx={{ mt: 2 }}
-        >
-          {isLoading ? "Logging out..." : "Logout"}
-        </Button>
-      </Box>
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: { xs: "100%", sm: "80%", md: "25%", lg: "20%" }, // Responsive width
+    bgcolor: "background.paper",
+    p: { xs: 2, sm: 3 }, // Smaller padding on extra small screens
+    borderRadius: 2,
+  }}
+>
+  <Avatar
+    alt={user.username}
+    src={user.profilePic}
+    sx={{
+      width: { xs: 80, sm: 100 }, // Smaller Avatar on extra small screens
+      height: { xs: 80, sm: 100 },
+      mb: 2,
+    }}
+  />
+  <Typography variant="h6" color="textPrimary" textAlign="center">
+    {user.username}
+  </Typography>
+  <Typography variant="body2" color="textSecondary" textAlign="center">
+    {user.name}
+  </Typography>
+  <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }} textAlign="center">
+    {user.email}
+  </Typography>
+  <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }} textAlign="center">
+    {user.phone}
+  </Typography>
+  <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }} textAlign="center">
+    {user.bio}
+  </Typography>
+  <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }} textAlign="center">
+    {user.dob ? new Date(user.dob).toLocaleDateString("en-GB") : "N/A"}
+  </Typography>
+  <Button
+    onClick={handleEditToggle}
+    variant="contained"
+    color="primary"
+    fullWidth
+    sx={{ mt: 2 }}
+  >
+    Edit Profile
+  </Button>
+  <Button
+    onClick={handleLogout}
+    disabled={isLoading}
+    variant="contained"
+    color="error"
+    fullWidth
+    sx={{ mt: 2 }}
+  >
+    {isLoading ? "Logging out..." : "Logout"}
+  </Button>
+</Box>
 
       {/* Right Section: Image Viewer */}
       <Box

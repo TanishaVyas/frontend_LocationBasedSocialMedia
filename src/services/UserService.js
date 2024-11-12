@@ -16,14 +16,14 @@ _id: "6720781d989ac7ab22e46160"
 
 */
 export async function fetchCurrentUser() {
-  const storedToken = localStorage.getItem("token");
-  const response = await fetch("http://localhost:8080/auth/current_user", {
-    headers: { Authorization: `Bearer ${storedToken}` },
-    credentials: "include",
-  });
-  const userData = await response.json();
-  console.log("User details:", userData);
-  return userData;
+    const storedToken = localStorage.getItem("token");
+    const response = await fetch("https://backend-location-social-media.onrender.com/auth/current_user", {
+        headers: { Authorization: `Bearer ${storedToken}` },
+        credentials: "include",
+    });
+    const userData = await response.json();
+    console.log("User details:", userData);
+    return userData;
 }
 
 //used in editprofile.js
@@ -38,21 +38,21 @@ const [updatedUser, setUpdatedUser] = useState({
   });
    */
 export async function updateUserProfile(updatedUser) {
-  const response = await fetch("http://localhost:8080/auth/update-profile", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedUser),
-  });
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.error);
-  }
-  return await response.json();
+    const response = await fetch("https://backend-location-social-media.onrender.com/auth/update-profile", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedUser),
+    });
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+    }
+    return await response.json();
 }
 
 export function logout() {
-  window.location.href = "http://localhost:8080/auth/logout";
+    window.location.href = "https://backend-location-social-media.onrender.com/auth/logout";
 }

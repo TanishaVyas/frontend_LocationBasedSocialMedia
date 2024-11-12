@@ -8,20 +8,22 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Typography from "@mui/material/Typography";
 import Slider from "@mui/material/Slider";
-import { fetchNearbyGroups } from "../services/groupService";
-import { fetchAllCategories } from "../services/groupService";
-
+import { fetchNearbyGroups, fetchAllCategories } from "../services/groupService";
+import { useLocation } from "react-router-dom";
 const SearchGroup = ({ navigateTo }) => {
+
+  const location = useLocation();
+  const { category } = location.state || {}; // Receive the category from the state
+
   const [user, setUser] = useState(null);
-  const [allGroups, setAllGroups] = useState([]); // All groups
-  const [groups, setGroups] = useState([]); // Filtered groups to display
+  const [allGroups, setAllGroups] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [searchInput, setSearchInput] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(""); // New state for category
-  const [distanceFilter, setDistanceFilter] = useState(1); // New state for distance filter
+  const [selectedCategory, setSelectedCategory] = useState(category || "");
+  const [distanceFilter, setDistanceFilter] = useState(1);
   const [message, setMessage] = useState("Nearby groups");
   const [categories, setCategories] = useState([]);
 
-  // Fetch categories and groups when component mounts
   useEffect(() => {
     fetchAllCategories()
       .then((fetchedCategories) => {
@@ -31,36 +33,31 @@ const SearchGroup = ({ navigateTo }) => {
 
     fetchNearbyGroups(setUser)
       .then((nearbyGroups) => {
-        setAllGroups(nearbyGroups); // Store all groups
-        setGroups(nearbyGroups); // Initially display all groups
+        setAllGroups(nearbyGroups);
+        setGroups(nearbyGroups);
       })
       .catch((error) => console.error(error));
   }, []);
 
-  // Handle search input change
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
     filterGroups(event.target.value, selectedCategory, distanceFilter);
   };
 
-  // Handle category selection change
   const handleCategoryChange = (event) => {
     const category = event.target.value;
     setSelectedCategory(category);
     filterGroups(searchInput, category, distanceFilter);
   };
 
-  // Handle distance slider change
   const handleDistanceChange = (event, newValue) => {
     setDistanceFilter(newValue);
     filterGroups(searchInput, selectedCategory, newValue);
   };
 
-  // Function to filter groups by search input, category, and distance
   const filterGroups = (name, category, maxDistance) => {
     let filteredGroups = allGroups;
 
-    // Search filter
     if (name) {
       filteredGroups = filteredGroups.filter((group) =>
         group.name.toLowerCase().includes(name.toLowerCase())
@@ -70,7 +67,6 @@ const SearchGroup = ({ navigateTo }) => {
       setMessage("Nearby groups");
     }
 
-    // Category filter
     if (category) {
       filteredGroups = filteredGroups.filter(
         (group) => group.category.toLowerCase() === category.toLowerCase()
@@ -78,66 +74,62 @@ const SearchGroup = ({ navigateTo }) => {
       setMessage(`Filtering groups in category "${category}"`);
     }
 
-    // Distance filter
     filteredGroups = filteredGroups.filter(
-      (group) => group.distance <= maxDistance // Convert km to meters
+      (group) => group.distance <= maxDistance
     );
 
     setGroups(filteredGroups);
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "20px",
-      }}
-    >
-      {/* Search Bar */}
-      <TextField
-        label="Search Groups"
-        variant="outlined"
-        value={searchInput}
-        onChange={handleSearchChange}
-        style={{ marginBottom: "20px", width: "100%", maxWidth: "600px" }}
-      />
+    <div style={{ padding: "20px" }}>
+      <Grid container spacing={2} justifyContent="center" direction="column">
+        {/* Search Bar */}
+        <Grid item xs={12}>
+          <TextField
+            label="Search Groups"
+            variant="outlined"
+            value={searchInput}
+            onChange={handleSearchChange}
+            fullWidth
+          />
+        </Grid>
 
-      {/* Category Filter */}
-      <FormControl
-        style={{ marginBottom: "20px", width: "100%", maxWidth: "600px" }}
-      >
-        <InputLabel>Filter by Category</InputLabel>
-        <Select
-          value={selectedCategory} // Set value to the selected category state
-          onChange={handleCategoryChange} // Updated event handler
-          label="Filter by Category"
-        >
-          <MenuItem value="">All Categories</MenuItem>
-          {categories.map((category) => (
-            <MenuItem key={category} value={category}>
-              {category}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        {/* Category Filter */}
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <InputLabel>Filter by Category</InputLabel>
+            <Select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              label="Filter by Category"
+            >
+              <MenuItem value="">All Categories</MenuItem>
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
 
-      {/* Distance Slider */}
-      <FormControl style={{ marginBottom: "20px", width: "100%", maxWidth: "600px" }}>
-        <Typography gutterBottom>Filter by Distance (km)</Typography>
-        <Slider
-          value={distanceFilter}
-          onChange={handleDistanceChange}
-          aria-labelledby="distance-slider"
-          min={1}
-          max={10}
-          valueLabelDisplay="auto"
-        />
-      </FormControl>
+        {/* Distance Slider */}
+        <Grid item xs={12}>
+          <Typography gutterBottom>Filter by Distance (km)</Typography>
+          <Slider
+            value={distanceFilter}
+            onChange={handleDistanceChange}
+            aria-labelledby="distance-slider"
+            min={1}
+            max={10}
+            valueLabelDisplay="auto"
+          />
+        </Grid>
+      </Grid>
 
       {/* Dynamic Message */}
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom align="center" style={{ marginTop: "20px" }}>
         {message}
       </Typography>
 

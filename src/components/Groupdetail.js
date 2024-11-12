@@ -11,7 +11,7 @@ function Group() {
   useEffect(() => {
     const fetchGroupData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/user/groups/${id}`);
+        const response = await fetch(`https://backend-location-social-media.onrender.com/user/groups/${id}`);
         if (!response.ok) {
           throw new Error("Group not found");
         }

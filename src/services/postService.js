@@ -5,18 +5,19 @@ import { convertToBase64 } from "./imageService"
 everypage has userid of the active user u can get it from there (stored in local storage/ function fetchcurrentuser in userservice) 
 fetchNearByGroups in groupservice gives groupid too
 */
-export const createPost = async({ image, userId, description, groupId }) => {
+export const createPost = async({ image, userId, description, groupId, latitude, longitude }) => {
     try {
-        var imgBase64 = await convertToBase64(image);
-        console.log(imgBase64);
+        const imgBase64 = await convertToBase64(image);
         const postData = {
-            userId: userId,
-            groupId: groupId,
+            userId,
+            groupId,
             img: imgBase64,
             imgdesc: description,
+            latitude,
+            longitude,
         };
 
-        const response = await fetch("http://localhost:8080/post/create-post", {
+        const response = await fetch("https://backend-location-social-media.onrender.com/post/create-post", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -58,7 +59,7 @@ _id: "6723e6b17f5b7378658aa1cf"
  */
 export const getAllPosts = async() => {
     try {
-        const response = await fetch("http://localhost:8080/post/getAllPost", {
+        const response = await fetch("https://backend-location-social-media.onrender.com/post/getAllPost", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(),
@@ -81,7 +82,7 @@ export const getAllPostsByGroupId = ({ groupId }) => {
     return new Promise(async(resolve, reject) => {
         try {
             const response = await fetch(
-                "http://localhost:8080/post/getAllPostByGroupId", {
+                "https://backend-location-social-media.onrender.com/post/getAllPostByGroupId", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ groupId }) // Send as an object
@@ -106,7 +107,7 @@ export const getAllPostsByGroupId = ({ groupId }) => {
 export const getAllPostsByUserId = async(UserId) => {
     try {
         const response = await fetch(
-            "http://localhost:8080/post/getAllPostByUserId", {
+            "https://backend-location-social-media.onrender.com/post/getAllPostByUserId", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(UserId),
@@ -142,7 +143,7 @@ export const getAllPostByDistance = (setUser) => {
                                 try {
                                     // Fetch posts by distance
                                     const response = await fetch(
-                                        "http://localhost:8080/post/getAllPostByDistance", {
+                                        "https://backend-location-social-media.onrender.com/post/getAllPostByDistance", {
                                             method: "POST",
                                             headers: { "Content-Type": "application/json" },
                                             body: JSON.stringify({ latitude, longitude }),
@@ -184,7 +185,7 @@ export const getAllPostByDistance = (setUser) => {
 
 export const likeOnPost = async(PostId, userId) => {
     try {
-        const response = await fetch("http://localhost:8080/post/likeOnPost", {
+        const response = await fetch("https://backend-location-social-media.onrender.com/post/likeOnPost", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(PostId, userId),
@@ -205,7 +206,7 @@ export const likeOnPost = async(PostId, userId) => {
 
 export const addComment = async(postId, userId, comment) => {
     try {
-        const response = await fetch("http://localhost:8080/post/addComment", {
+        const response = await fetch("https://backend-location-social-media.onrender.com/post/addComment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(postId, userId, comment),

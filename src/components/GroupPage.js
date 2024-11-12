@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";  // Import useParams
+import { useParams } from "react-router-dom"; // Import useParams
 import {
   Box,
   Typography,
@@ -12,7 +12,7 @@ import { getAllPostsByGroupId } from "../services/postService";
 import PostViewer from "./PostViewer";
 
 function GroupPage() {
-  const { groupId } = useParams();  // Use useParams to get groupId from the URL
+  const { groupId } = useParams(); // Use useParams to get groupId from the URL
   console.log("Group ID from URL:", groupId);
   const [isLoading, setIsLoading] = useState(true);
   const [group, setGroup] = useState(null);
@@ -21,10 +21,10 @@ function GroupPage() {
   useEffect(() => {
     const fetchGroupData = async () => {
       try {
-        const groupData = await fetchGroupDetails({groupId});
+        const groupData = await fetchGroupDetails({ groupId });
         setGroup(groupData);
 
-        const groupPosts = await getAllPostsByGroupId({groupId});
+        const groupPosts = await getAllPostsByGroupId({ groupId });
         setPosts(groupPosts);
       } catch (error) {
         console.error("Error fetching group data or posts:", error);
@@ -55,7 +55,15 @@ function GroupPage() {
     return <div>No group data found.</div>;
   }
 
-  const { name, description, category, city, coordinates, createdAt, distance } = group;
+  const {
+    name,
+    description,
+    category,
+    city,
+    coordinates,
+    createdAt,
+    distance,
+  } = group;
 
   return (
     <Box
@@ -70,13 +78,13 @@ function GroupPage() {
       {/* Left Section: Group Profile */}
       <Box
         sx={{
+          flex: 1,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          width: { xs: "100%", md: "20%" },
           bgcolor: "background.paper",
           p: 3,
           borderRadius: 2,
+          width: { xs: "100%", sm: "80%", md: "25%", lg: "20%" }, // Match the width from Dashboard
         }}
       >
         <Typography variant="h6" color="textPrimary">
@@ -89,13 +97,15 @@ function GroupPage() {
           <strong>City:</strong> {city}
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-  <strong>Distance:</strong> {distance} meters
-</Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Description:</strong> {description || "No description available"}
+          <strong>Distance:</strong> {distance} meters
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
-          <strong>Created At:</strong> {new Date(createdAt).toLocaleDateString()}
+          <strong>Description:</strong>{" "}
+          {description || "No description available"}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+          <strong>Created At:</strong>{" "}
+          {new Date(createdAt).toLocaleDateString()}
         </Typography>
         <Button
           variant="contained"
@@ -107,7 +117,6 @@ function GroupPage() {
           View on Google Maps
         </Button>
       </Box>
-
       {/* Right Section: Group Posts */}
       <Box
         sx={{

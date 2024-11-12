@@ -3,7 +3,7 @@ import { fetchCurrentUser } from "./UserService";
 
 export const fetchGroupDetails = ({ groupId }) => {
     return new Promise((resolve, reject) => {
-        fetch(`http://localhost:8080/user/groups/${groupId}`)
+        fetch(`https://backend-location-social-media.onrender.com/user/groups/${groupId}`)
             .then((response) => {
                 if (!response.ok) {
                     reject(new Error("Failed to fetch group details"));
@@ -17,7 +17,7 @@ export const fetchGroupDetails = ({ groupId }) => {
 
 
 export const fetchGroupById = async(id) => {
-    const response = await axios.get(`http://localhost:8080/users/groups/${id}`);
+    const response = await axios.get(`https://backend-location-social-media.onrender.com/users/groups/${id}`);
     return response.data;
 };
 
@@ -42,7 +42,7 @@ export const fetchAllCategories = () => {
     return new Promise(async(resolve, reject) => {
         try {
             // Make the API request to get all categories
-            const response = await fetch("http://localhost:8080/nearby/fetch-all-categories", {
+            const response = await fetch("https://backend-location-social-media.onrender.com/nearby/fetch-all-categories", {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             });
@@ -81,7 +81,7 @@ export const fetchNearbyGroups = (setUser) => {
                                 try {
                                     // Fetch nearby groups within radius
                                     const response = await fetch(
-                                        "http://localhost:8080/nearby/fetch-locations-in-radius", {
+                                        "https://backend-location-social-media.onrender.com/nearby/fetch-locations-in-radius", {
                                             method: "POST",
                                             headers: { "Content-Type": "application/json" },
                                             body: JSON.stringify({ latitude, longitude }),
@@ -142,7 +142,7 @@ export const fetchNearbyGroupsByCategory = async(
 ) => {
     try {
         const response = await axios.post(
-            `http://localhost:8080/nearby/fetch-locations-in-radius-category`, {
+            `https://backend-location-social-media.onrender.com/nearby/fetch-locations-in-radius-category`, {
                 latitude,
                 longitude,
                 category,
@@ -157,7 +157,7 @@ export const fetchNearbyGroupsByCategory = async(
 
 //join a group implemented in dashboard.js http://localhost:3000/data
 export const joinGroup = async(userId, groupId) => {
-    const response = await axios.post("http://localhost:8080/user/join-group", {
+    const response = await axios.post("https://backend-location-social-media.onrender.com/user/join-group", {
         userId,
         groupId,
     });

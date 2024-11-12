@@ -17,7 +17,8 @@ function FooterNav() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch("http://localhost:8080/auth/current_user", {
+      const response = await fetch("https://backend-location-social-media.onrender.com/auth/current_user", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         credentials: "include",
       });
       const userData = await response.json();

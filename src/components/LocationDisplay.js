@@ -6,7 +6,7 @@ const LocationDisplay = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const response = await fetch("http://localhost:8080/auth/current_user", {
+      const response = await fetch("https://backend-location-social-media.onrender.com/auth/current_user", {
         credentials: "include",
       });
       const userData = await response.json();
@@ -26,7 +26,7 @@ const LocationDisplay = () => {
           if (!userEmail) return;
 
           // Send latitude and longitude to the backend along with email
-          fetch("http://localhost:8080/user/update-location", {
+          fetch("https://backend-location-social-media.onrender.com/user/update-location", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
